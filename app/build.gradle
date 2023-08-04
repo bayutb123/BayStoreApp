@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -10,6 +12,7 @@ android {
     defaultConfig {
         applicationId "com.bayutb.baystoreapp"
         minSdk 24
+        //noinspection OldTargetApi
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -41,6 +44,7 @@ android {
     }
     packagingOptions {
         resources {
+            exclude("exclude 'META-INF/services/javax.annotation.processing.Processor'")
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
@@ -48,10 +52,10 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
     implementation platform('org.jetbrains.kotlin:kotlin-bom:1.8.0')
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
-    implementation 'androidx.activity:activity-compose:1.5.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+    implementation 'androidx.activity:activity-compose:1.7.2'
     implementation platform('androidx.compose:compose-bom:2022.10.00')
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
@@ -67,4 +71,13 @@ dependencies {
 
     def nav_version = "2.6.0"
     implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    // HILT
+    implementation("com.google.dagger:hilt-android:2.44")
+    kapt("com.google.dagger:hilt-android-compiler:2.44")
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }
