@@ -18,28 +18,39 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
 import com.bayutb.baystoreapp.R
+import com.bayutb.baystoreapp.core.data.source.dummy.DummyGame
+import com.bayutb.baystoreapp.domain.model.Game
 
 @Composable
-fun GridHolder(modifier: Modifier = Modifier) {
-    Box(modifier = modifier.size(80.dp)) {
-        Image(
-            painter = painterResource(id = R.drawable.game_ml),
-            contentDescription = "Mobile Legend",
-            contentScale = ContentScale.Crop,
-            modifier = modifier.fillMaxSize()
+fun GridHolder(modifier: Modifier = Modifier, game: Game) {
+    Box(
+        modifier = modifier
+            .size(80.dp)
+            .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
+    ) {
+        AsyncImage(
+            model = game.imageUrl, contentDescription = null, contentScale = ContentScale.Fit,
+            modifier = modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(8.dp))
         )
     }
 }
 
 @Composable
 fun ColumnHolder(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    game: Game,
 ) {
     Box(
         modifier = modifier
@@ -47,7 +58,6 @@ fun ColumnHolder(
                 MaterialTheme.colorScheme.primaryContainer,
                 shape = RoundedCornerShape(4.dp)
             )
-            .clickable { }
     ) {
         Row(
             modifier
@@ -57,13 +67,13 @@ fun ColumnHolder(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.game_ml),
-                contentDescription = "Mobile Legend",
-                contentScale = ContentScale.Crop,
-                modifier = modifier.fillMaxHeight()
+            AsyncImage(
+                model = game.imageUrl, contentDescription = null, contentScale = ContentScale.Fit,
+                modifier = modifier
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(4.dp))
             )
-            Text(text = "Mobile Legends : Bang Bang")
+            Text(text = game.name)
         }
     }
 }
@@ -71,5 +81,4 @@ fun ColumnHolder(
 @Preview(showBackground = true, device = Devices.PIXEL_4_XL)
 @Composable
 fun PvGameHolder() {
-    ColumnHolder()
 }

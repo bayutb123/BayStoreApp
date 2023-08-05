@@ -8,14 +8,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.bayutb.baystoreapp.R
 
 @Composable
 fun Topbar(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    imageUrl: String
 ) {
-    Image(
-        painter = painterResource(id = R.drawable.banner_catalog),
+    AsyncImage(
+        model = imageUrl,
         contentDescription = null,
         modifier
             .fillMaxWidth()

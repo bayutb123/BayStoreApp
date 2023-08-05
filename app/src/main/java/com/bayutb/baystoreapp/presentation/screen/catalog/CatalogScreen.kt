@@ -1,5 +1,6 @@
 package com.bayutb.baystoreapp.presentation.screen.catalog
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -20,24 +23,35 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.bayutb.baystoreapp.R
 import com.bayutb.baystoreapp.presentation.components.TitleText
 import com.bayutb.baystoreapp.presentation.components.catalog.ItemHolder
 import com.bayutb.baystoreapp.presentation.components.catalog.Topbar
+import com.bayutb.baystoreapp.presentation.screen.Screen
 import com.bayutb.baystoreapp.ui.theme.BayStoreAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CatalogScren(
+fun CatalogScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit,
+    onBackClick: (Int) -> Unit,
+    gameId: Int,
+    catalogViewModel: CatalogViewModel = hiltViewModel()
 ) {
-    Scaffold(topBar = { Topbar()},
+    val items = catalogViewModel.getItemByGameId(gameId)
+    val gameDetail = catalogViewModel.getGameDetailById(gameId)
+    items.forEach {
+        Log.d("CatalogScreen", "${it.name} from gameId = ${it.gameId} with total diamonds of ${it.baseCount + (it.bonusItem ?: 0)} LOADED SUCCESSFULLY!")
+    }
+    Scaffold(topBar = { Topbar(imageUrl = gameDetail.imageUrl)},
         bottomBar = {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically,
                 modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
@@ -68,14 +82,11 @@ fun CatalogScren(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.game_ml),
-                        contentDescription = "Mobile legends",
-                        modifier.size(60.dp)
-                    )
+                    AsyncImage(model = gameDetail.imageUrl, contentDescription = gameDetail.name,
+                        modifier.size(60.dp).clip(RoundedCornerShape(8.dp)))
                     Column {
-                        Text(text = "Mobile Legends : Bang Bang", fontWeight = FontWeight.Bold)
-                        Text(text = "Moonton")
+                        Text(text = gameDetail.name, fontWeight = FontWeight.Bold)
+                        Text(text = gameDetail.publisher)
                     }
                 }
             }
@@ -92,12 +103,12 @@ fun CatalogScren(
                     verticalArrangement = Arrangement.spacedBy(spacer),
                     columns = GridCells.Fixed(2),
                     content = {
-                        items(20) {
-                            val itemCount = it + 2
+                        items(items = items) {
                             ItemHolder(
-                                itemCountDetail = listOf(itemCount * 5, itemCount),
-                                itemName = "diamonds",
-                                itemIcon = painterResource(id = R.drawable.item_diamond)
+                                baseItem = it.baseCount,
+                                bonusItem = it.bonusItem,
+                                itemName = it.name,
+                                iconUrl = it.iconUrl
                             )
                         }
                     }
@@ -111,8 +122,5 @@ fun CatalogScren(
 @Composable
 fun PreviewCatalogScreen() {
     BayStoreAppTheme {
-        CatalogScren {
-
-        }
     }
 }
