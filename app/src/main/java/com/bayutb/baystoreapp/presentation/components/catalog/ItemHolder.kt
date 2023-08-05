@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,17 +27,27 @@ fun ItemHolder(
     baseItem: Int,
     bonusItem: Int?,
     itemName: String,
-    iconUrl: String
+    iconUrl: String,
+    isSelected: Boolean = false
 ) {
+    var containerColor = MaterialTheme.colorScheme.surface
+    var contentColor = MaterialTheme.colorScheme.onSurface
+    if (isSelected) {
+        containerColor = MaterialTheme.colorScheme.onPrimaryContainer
+        contentColor = MaterialTheme.colorScheme.primaryContainer
+    } else {
+        containerColor = MaterialTheme.colorScheme.surface
+        contentColor = MaterialTheme.colorScheme.onSurface
+    }
     Box(
         modifier = modifier.background(
-            shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.surface
+            shape = RoundedCornerShape(8.dp), color = containerColor
         )
     ) {
-        Column(modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Column(modifier.padding(16.dp).fillMaxSize(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
 
                 AsyncImage(model = iconUrl, contentDescription = null, modifier = modifier.size(20.dp))
@@ -46,7 +58,7 @@ fun ItemHolder(
                         } else {
                             baseItem
                         }
-                    }", fontSize = MaterialTheme.typography.bodyLarge.fontSize
+                    }", fontSize = MaterialTheme.typography.bodyLarge.fontSize, color = contentColor
                 )
             }
             Text(
@@ -55,7 +67,8 @@ fun ItemHolder(
                 }
                 } $itemName",
                 fontStyle = FontStyle.Italic,
-                fontSize = MaterialTheme.typography.bodySmall.fontSize
+                fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                color = contentColor
             )
         }
     }

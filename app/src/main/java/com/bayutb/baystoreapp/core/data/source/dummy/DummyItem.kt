@@ -21,7 +21,7 @@ object DummyItem {
                         iconUrl = "https://static.wikia.nocookie.net/mobile-legends/images/e/ea/Diamond.png/revision/latest?cb=20211127070228",
                         baseCount = id * 10,
                         bonusItem = id * 2,
-                        price = id * 1500
+                        price = id * 10 * 300 * 111 / 100
                     )
                 )
             }

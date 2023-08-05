@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,7 +37,7 @@ fun GridHolder(modifier: Modifier = Modifier, game: Game) {
     Box(
         modifier = modifier
             .size(80.dp)
-            .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
+            .background(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(8.dp))
     ) {
         AsyncImage(
             model = game.imageUrl, contentDescription = null, contentScale = ContentScale.Fit,
@@ -62,15 +63,15 @@ fun ColumnHolder(
         Row(
             modifier
                 .fillMaxWidth()
-                .height(50.dp)
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             AsyncImage(
-                model = game.imageUrl, contentDescription = null, contentScale = ContentScale.Fit,
+                model = game.imageUrl, contentDescription = null, contentScale = ContentScale.FillWidth,
                 modifier = modifier
-                    .fillMaxHeight()
+                    .size(30.dp)
+                    .background(color = MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(4.dp))
                     .clip(RoundedCornerShape(4.dp))
             )
             Text(text = game.name)

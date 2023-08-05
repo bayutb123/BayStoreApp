@@ -7,5 +7,6 @@ data class InGameCurrency(
     val iconUrl: String,
     val baseCount: Int,
     val bonusItem: Int?,
-    val price: Int
+    val price: Int,
+    var isSelected: Boolean = false
 )

@@ -14,7 +14,7 @@ import com.bayutb.baystoreapp.R
 @Composable
 fun Topbar(
     modifier: Modifier = Modifier,
-    imageUrl: String
+    imageUrl: String,
 ) {
     AsyncImage(
         model = imageUrl,

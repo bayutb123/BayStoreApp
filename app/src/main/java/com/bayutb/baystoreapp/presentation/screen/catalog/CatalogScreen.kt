@@ -3,6 +3,7 @@ package com.bayutb.baystoreapp.presentation.screen.catalog
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,6 +22,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,8 +38,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.bayutb.baystoreapp.R
 import com.bayutb.baystoreapp.presentation.components.TitleText
+import com.bayutb.baystoreapp.presentation.components.catalog.BottomBar
 import com.bayutb.baystoreapp.presentation.components.catalog.ItemHolder
 import com.bayutb.baystoreapp.presentation.components.catalog.Topbar
+import com.bayutb.baystoreapp.presentation.components.convertToRupiah
 import com.bayutb.baystoreapp.presentation.screen.Screen
 import com.bayutb.baystoreapp.ui.theme.BayStoreAppTheme
 
@@ -46,6 +53,12 @@ fun CatalogScreen(
     gameId: Int,
     catalogViewModel: CatalogViewModel = hiltViewModel()
 ) {
+    var itemPrice by remember {
+        mutableStateOf(0)
+    }
+    var selectedIndex by remember {
+        mutableStateOf(-1)
+    }
     val items = catalogViewModel.getItemByGameId(gameId)
     val gameDetail = catalogViewModel.getGameDetailById(gameId)
     items.forEach {
@@ -53,16 +66,7 @@ fun CatalogScreen(
     }
     Scaffold(topBar = { Topbar(imageUrl = gameDetail.imageUrl)},
         bottomBar = {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically,
-                modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                Column(modifier = modifier.weight(1f), horizontalAlignment = Alignment.End) {
-                    Text(text = "Rp. 250.000", fontWeight = FontWeight.Bold)
-                    Text(text = "VAT 11% Included", fontStyle = FontStyle.Italic, fontSize = MaterialTheme.typography.bodyMedium.fontSize)
-                }
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = "Checkout")
-                }
-            }
+            BottomBar(price = itemPrice, selectedIndex = selectedIndex)
         }) { paddingValues ->
         Column(
             modifier
@@ -83,7 +87,9 @@ fun CatalogScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     AsyncImage(model = gameDetail.imageUrl, contentDescription = gameDetail.name,
-                        modifier.size(60.dp).clip(RoundedCornerShape(8.dp)))
+                        modifier
+                            .size(60.dp)
+                            .clip(RoundedCornerShape(8.dp)))
                     Column {
                         Text(text = gameDetail.name, fontWeight = FontWeight.Bold)
                         Text(text = gameDetail.publisher)
@@ -101,18 +107,22 @@ fun CatalogScreen(
                     contentPadding = PaddingValues(bottom = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(spacer),
                     verticalArrangement = Arrangement.spacedBy(spacer),
-                    columns = GridCells.Fixed(2),
-                    content = {
-                        items(items = items) {
-                            ItemHolder(
-                                baseItem = it.baseCount,
-                                bonusItem = it.bonusItem,
-                                itemName = it.name,
-                                iconUrl = it.iconUrl
-                            )
-                        }
+                    columns = GridCells.Fixed(2)
+                ) {
+                    items(items = items, key = { it.id }) {
+                        ItemHolder(
+                            baseItem = it.baseCount,
+                            bonusItem = it.bonusItem,
+                            itemName = it.name,
+                            iconUrl = it.iconUrl,
+                            modifier = modifier.clickable {
+                                itemPrice = it.price
+                                selectedIndex = it.id
+                            },
+                            isSelected = selectedIndex == it.id
+                        )
                     }
-                )
+                }
             }
         }
     }
