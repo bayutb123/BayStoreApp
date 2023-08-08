@@ -1,7 +1,6 @@
 package com.bayutb.baystoreapp.presentation.screen.catalog
 
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +15,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,27 +27,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.bayutb.baystoreapp.R
-import com.bayutb.baystoreapp.presentation.components.TitleText
-import com.bayutb.baystoreapp.presentation.components.catalog.BottomBar
-import com.bayutb.baystoreapp.presentation.components.catalog.ItemHolder
-import com.bayutb.baystoreapp.presentation.components.catalog.Topbar
-import com.bayutb.baystoreapp.presentation.components.convertToRupiah
-import com.bayutb.baystoreapp.presentation.screen.Screen
+import com.bayutb.baystoreapp.domain.model.InGameCurrency
+import com.bayutb.baystoreapp.presentation.screen.TitleText
+import com.bayutb.baystoreapp.presentation.screen.catalog.components.BottomBar
+import com.bayutb.baystoreapp.presentation.screen.catalog.components.ItemHolder
+import com.bayutb.baystoreapp.presentation.screen.catalog.components.Topbar
 import com.bayutb.baystoreapp.ui.theme.BayStoreAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CatalogScreen(
     modifier: Modifier = Modifier,
-    onBackClick: (Int) -> Unit,
+    onCheckOut: (InGameCurrency) -> Unit,
     gameId: Int,
     catalogViewModel: CatalogViewModel = hiltViewModel()
 ) {
@@ -64,9 +58,11 @@ fun CatalogScreen(
     items.forEach {
         Log.d("CatalogScreen", "${it.name} from gameId = ${it.gameId} with total diamonds of ${it.baseCount + (it.bonusItem ?: 0)} LOADED SUCCESSFULLY!")
     }
-    Scaffold(topBar = { Topbar(imageUrl = gameDetail.imageUrl)},
+    Scaffold(topBar = { Topbar(imageUrl = gameDetail.imageUrl) },
         bottomBar = {
-            BottomBar(price = itemPrice, selectedIndex = selectedIndex)
+            BottomBar(price = itemPrice, selectedIndex = selectedIndex) {
+                onCheckOut(items[selectedIndex])
+            }
         }) { paddingValues ->
         Column(
             modifier

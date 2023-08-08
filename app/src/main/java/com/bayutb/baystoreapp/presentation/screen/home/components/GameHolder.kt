@@ -1,4 +1,4 @@
-package com.bayutb.baystoreapp.presentation.components.home
+package com.bayutb.baystoreapp.presentation.screen.home.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,12 +23,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 import com.bayutb.baystoreapp.R
 import com.bayutb.baystoreapp.core.data.source.dummy.DummyGame
 import com.bayutb.baystoreapp.domain.model.Game
@@ -37,10 +41,16 @@ fun GridHolder(modifier: Modifier = Modifier, game: Game) {
     Box(
         modifier = modifier
             .size(80.dp)
-            .background(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(8.dp))
+            .background(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = RoundedCornerShape(8.dp)
+            )
     ) {
         AsyncImage(
-            model = game.imageUrl, contentDescription = null, contentScale = ContentScale.Fit,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(game.imageUrl)
+                .crossfade(true)
+                .build(), contentDescription = null, contentScale = ContentScale.Fit,
             modifier = modifier
                 .fillMaxSize()
                 .clip(RoundedCornerShape(8.dp))
@@ -67,19 +77,17 @@ fun ColumnHolder(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            AsyncImage(
-                model = game.imageUrl, contentDescription = null, contentScale = ContentScale.FillWidth,
+            SubcomposeAsyncImage(
+                model = game.imageUrl, loading = { CircularProgressIndicator() }, contentDescription = null, contentScale = ContentScale.FillWidth,
                 modifier = modifier
                     .size(30.dp)
-                    .background(color = MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(4.dp))
+                    .background(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        shape = RoundedCornerShape(4.dp)
+                    )
                     .clip(RoundedCornerShape(4.dp))
             )
             Text(text = game.name)
         }
     }
-}
-
-@Preview(showBackground = true, device = Devices.PIXEL_4_XL)
-@Composable
-fun PvGameHolder() {
 }

@@ -1,4 +1,4 @@
-package com.bayutb.baystoreapp.presentation.components
+package com.bayutb.baystoreapp.presentation.screen
 
 import java.text.NumberFormat
 import java.util.Currency

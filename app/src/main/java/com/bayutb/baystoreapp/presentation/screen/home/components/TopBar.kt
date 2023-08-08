@@ -1,4 +1,4 @@
-package com.bayutb.baystoreapp.presentation.components.home
+package com.bayutb.baystoreapp.presentation.screen.home.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

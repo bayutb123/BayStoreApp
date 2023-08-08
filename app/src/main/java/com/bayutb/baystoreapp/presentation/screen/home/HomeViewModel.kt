@@ -33,7 +33,7 @@ class HomeViewModel @Inject constructor(
     init {
         initData()
         allGames = DummyGame.games
-        allHotGames = allGames.filter { it.popularity > 70 }
+        allHotGames = allGames.sortedByDescending { it.popularity }.take(8)
     }
 
     private fun initData() {

@@ -1,4 +1,4 @@
-package com.bayutb.baystoreapp.presentation.components.catalog
+package com.bayutb.baystoreapp.presentation.screen.catalog.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,10 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.bayutb.baystoreapp.presentation.components.convertToRupiah
+import com.bayutb.baystoreapp.presentation.screen.convertToRupiah
 
 @Composable
-fun BottomBar(modifier: Modifier = Modifier, price: Int, selectedIndex: Int) {
+fun BottomBar(modifier: Modifier = Modifier, price: Int, selectedIndex: Int, onCheckOut: () -> Unit) {
 
     Column {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically,
@@ -25,7 +25,7 @@ fun BottomBar(modifier: Modifier = Modifier, price: Int, selectedIndex: Int) {
                 Text(text = convertToRupiah(price), fontWeight = FontWeight.Bold)
                 Text(text = "VAT 11% Included", fontStyle = FontStyle.Italic, fontSize = MaterialTheme.typography.bodyMedium.fontSize)
             }
-            Button(onClick = { /*TODO*/ }, enabled = selectedIndex > -1) {
+            Button(onClick = onCheckOut, enabled = selectedIndex > -1) {
                 Text(text = "Checkout")
             }
         }

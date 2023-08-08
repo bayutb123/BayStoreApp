@@ -1,14 +1,15 @@
 package com.bayutb.baystoreapp
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.bayutb.baystoreapp.presentation.screen.Screen
+import com.bayutb.baystoreapp.presentation.Screen
 import com.bayutb.baystoreapp.presentation.screen.catalog.CatalogScreen
+import com.bayutb.baystoreapp.presentation.screen.checkout.CheckOutScreen
 import com.bayutb.baystoreapp.presentation.screen.home.HomeScreen
 
 @Composable
@@ -16,6 +17,7 @@ fun App() {
     NavController()
 }
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun NavController() {
     val navController = rememberNavController()
@@ -24,7 +26,7 @@ fun NavController() {
         startDestination = Screen.Home.route
     ) {
         composable(Screen.Home.route) {
-            HomeScreen(onItemClick = {
+            HomeScreen(onHomeItemClicked = {
                 navController.navigate("${Screen.Catalog.route}/$it")
             })
         }
@@ -35,11 +37,20 @@ fun NavController() {
             })
         ) {
             val gameId = it.arguments?.getInt("gameId")
-                CatalogScreen(
-                    onBackClick = {
-                        navController.navigateUp()
-                    }, gameId = gameId ?: 0
-                )
+            CatalogScreen(
+                onCheckOut = { inGameCurrency ->
+                    navController.navigate("${Screen.Checkout.route}/${inGameCurrency.id}")
+                }, gameId = gameId ?: 0
+            )
+        }
+        composable(
+            "${Screen.Checkout.route}/{inGameCurrencyId}",
+            arguments = listOf(navArgument("inGameCurrencyId") {
+                type = NavType.IntType
+            })
+        ) {
+            val gameId = it.arguments?.getInt("inGameCurrencyId")
+            CheckOutScreen(gameId = gameId ?: 0)
         }
     }
 }

@@ -32,112 +32,42 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bayutb.baystoreapp.domain.model.Game
-import com.bayutb.baystoreapp.presentation.components.TitleText
-import com.bayutb.baystoreapp.presentation.components.home.BottomBar
-import com.bayutb.baystoreapp.presentation.components.home.ColumnHolder
-import com.bayutb.baystoreapp.presentation.components.home.GridHolder
-import com.bayutb.baystoreapp.presentation.components.home.TopBar
-import kotlinx.coroutines.flow.flow
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.bayutb.baystoreapp.presentation.screen.TitleText
+import com.bayutb.baystoreapp.presentation.screen.home.components.BottomBar
+import com.bayutb.baystoreapp.presentation.screen.home.components.ColumnHolder
+import com.bayutb.baystoreapp.presentation.screen.home.components.GridHolder
+import com.bayutb.baystoreapp.presentation.screen.home.components.TopBar
+import com.bayutb.baystoreapp.presentation.screen.home.homepage.HomePage
+import com.bayutb.baystoreapp.presentation.screen.home.settingpage.SettingPage
+import com.bayutb.baystoreapp.presentation.screen.home.transactionpage.TransactionPage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    onItemClick: (Int) -> Unit,
-    homeViewModel: HomeViewModel = hiltViewModel()
+    onHomeItemClicked: (Int) -> Unit
 ) {
-    val gamesState = homeViewModel.games.value
-    val hotGamesState = homeViewModel.hotGames.value
-
-    // TEMPORARY
-    val allGames = homeViewModel.allGames
-    val allHotGames = homeViewModel.allHotGames
-
+    val navController = rememberNavController()
     Scaffold(
-        topBar = { TopBar() },
-        bottomBar = { BottomBar() }
+        bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+
+        NavHost(
+            navController = navController,
+            startDestination = "home_page",
+            modifier = modifier.padding(paddingValues)
         ) {
-
-            // HOT GAME
-            Column(modifier = modifier.padding(bottom = 8.dp)) {
-                TitleText(value = "Hot Games")
-                LazyRow(
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    content = {
-                        items(allHotGames) {
-                            GridHolder(
-                                game = it,
-                                modifier = modifier.clickable { onItemClick(it.id) },
-                            )
-                        }
-                    }
-                )
+            composable("home_page") {
+                HomePage(onItemClick = { onHomeItemClicked(it) })
             }
-            // GAME LIST
-            Column(
-                modifier = modifier
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp)
-            ) {
-                val context = LocalContext.current
-                var expanded by remember { mutableStateOf(false) }
-                var text by remember {
-                    mutableStateOf("Category")
-                }
-                ExposedDropdownMenuBox(
-                    expanded = expanded,
-                    onExpandedChange = {
-                        expanded = !expanded
-                    }
-                ) {
-                    TextField(
-                        readOnly = true,
-                        value = text,
-                        onValueChange = {},
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .menuAnchor(),
-                        trailingIcon = {
-                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                        })
-                    ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        repeat(10) {
-                            DropdownMenuItem(
-                                text = { Text(text = "Category $it") },
-                                onClick = {
-                                    text = "Category $it"
-                                    expanded = false
-                                    Toast.makeText(context, "Category $it", Toast.LENGTH_SHORT)
-                                        .show()
-                                }
-                            )
-                        }
-                    }
-                }
-
-                LazyColumn(contentPadding = PaddingValues(vertical = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp), content = {
-                        items(allGames) {
-                            ColumnHolder(
-                                modifier.clickable { onItemClick(it.id) },
-                                game = it
-                            )
-                            if (it.popularity > 50) {
-                                Log.d("HomeScreen", it.name)
-                            }
-                        }
-                    })
+            composable("transaction_page") {
+                TransactionPage()
+            }
+            composable("setting_page") {
+                SettingPage()
             }
         }
     }
@@ -146,5 +76,5 @@ fun HomeScreen(
 @Preview(showBackground = true, device = Devices.PIXEL_4_XL)
 @Composable
 fun PvHomeScreen() {
-    HomeScreen(homeViewModel = hiltViewModel(), onItemClick = {})
+
 }

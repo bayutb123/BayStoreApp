@@ -1,4 +1,4 @@
-package com.bayutb.baystoreapp.presentation.components.catalog
+package com.bayutb.baystoreapp.presentation.screen.catalog.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
