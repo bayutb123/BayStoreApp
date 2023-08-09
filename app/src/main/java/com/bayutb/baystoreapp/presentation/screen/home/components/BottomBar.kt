@@ -22,6 +22,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.bayutb.baystoreapp.presentation.screen.home.IconState
 import com.bayutb.baystoreapp.presentation.screen.home.NavigationBarItem
 
@@ -34,69 +37,56 @@ fun BottomBar(
     }
     val navItem: List<NavigationBarItem> = listOf(
         NavigationBarItem(
-            id = 1,
-            label = "Home",
-            route = "home_page",
-            selected = false,
-            icon = IconState(
-                active = Icons.Filled.Home,
-                inactive = Icons.Outlined.Home
+            id = 1, label = "Home", route = "home_page", selected = false, icon = IconState(
+                active = Icons.Filled.Home, inactive = Icons.Outlined.Home
             )
-        ),
-        NavigationBarItem(
+        ), NavigationBarItem(
             id = 2,
             label = "Transaction",
             route = "transaction_page",
             selected = false,
             icon = IconState(
-                active = Icons.Filled.History,
-                inactive = Icons.Outlined.HistoryToggleOff
+                active = Icons.Filled.History, inactive = Icons.Outlined.HistoryToggleOff
             )
-        ),
-        NavigationBarItem(
-            id = 3,
-            label = "Setting",
-            route = "setting_page",
-            selected = false,
-            icon = IconState(
-                active = Icons.Filled.Settings,
-                inactive = Icons.Outlined.Settings
+        ), NavigationBarItem(
+            id = 3, label = "Setting", route = "setting_page", selected = false, icon = IconState(
+                active = Icons.Filled.Settings, inactive = Icons.Outlined.Settings
             )
         )
     )
     NavigationBar {
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentDestination = navBackStackEntry?.destination
         navItem.forEachIndexed { index, _ ->
-            NavigationBarItem(
-                selected = selectedItem == index,
+            NavigationBarItem(selected = currentDestination?.hierarchy?.any { it.route == navItem[index].route } == true,
                 onClick = {
                     selectedItem = index
-                    navController.navigate(navItem[index].route)
+                    navController.navigate(navItem[index].route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 },
                 icon = {
-                    AnimatedVisibility(
-                        visible = selectedItem == index,
+                    AnimatedVisibility(visible = currentDestination?.hierarchy?.any { it.route == navItem[index].route } == true,
                         exit = shrinkHorizontally(shrinkTowards = Alignment.Start),
-                        enter = expandHorizontally()
-                    ) {
+                        enter = expandHorizontally()) {
                         Icon(
-                            navItem[index].icon.active,
-                            contentDescription = "${navItem[index].label}"
+                            navItem[index].icon.active, contentDescription = navItem[index].label
                         )
                     }
-                    AnimatedVisibility(
-                        visible = selectedItem != index,
+                    AnimatedVisibility(visible = currentDestination?.hierarchy?.any { it.route == navItem[index].route } == false,
                         exit = shrinkHorizontally(shrinkTowards = Alignment.Start),
-                        enter = expandHorizontally()
-                    ) {
+                        enter = expandHorizontally()) {
                         Icon(
-                            navItem[index].icon.inactive,
-                            contentDescription = "${navItem[index].label}"
+                            navItem[index].icon.inactive, contentDescription = navItem[index].label
                         )
                     }
 
                 },
-                label = { Text(text = "${navItem[index].label}", fontSize = 12.sp) }
-            )
+                label = { Text(text = "${navItem[index].label}", fontSize = 12.sp) })
         }
 
     }

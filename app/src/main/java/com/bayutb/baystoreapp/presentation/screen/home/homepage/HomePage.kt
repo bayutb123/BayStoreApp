@@ -74,7 +74,7 @@ fun HomePage(
             ) {
 
 
-                LazyColumn(contentPadding = PaddingValues(vertical = 16.dp),
+                LazyColumn(contentPadding = PaddingValues(bottom = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp), content = {
                         items(allGames) {
                             ColumnHolder(
