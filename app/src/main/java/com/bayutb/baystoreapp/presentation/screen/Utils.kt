@@ -7,5 +7,5 @@ fun convertToRupiah(value :Int) : String {
     val numberFormat = NumberFormat.getCurrencyInstance()
     numberFormat.maximumFractionDigits = 0
     numberFormat.currency = Currency.getInstance("IDR")
-    return numberFormat.format(value)
+    return numberFormat.format(value).replace(",", ".").replace("IDR", "Rp ")
 }
