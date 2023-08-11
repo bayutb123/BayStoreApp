@@ -6,9 +6,11 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.HistoryToggleOff
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.ManageAccounts
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -40,7 +42,8 @@ fun BottomBar(
             id = 1, label = "Home", route = "home_page", selected = false, icon = IconState(
                 active = Icons.Filled.Home, inactive = Icons.Outlined.Home
             )
-        ), NavigationBarItem(
+        ),
+        NavigationBarItem(
             id = 2,
             label = "Transaction",
             route = "transaction_page",
@@ -48,9 +51,10 @@ fun BottomBar(
             icon = IconState(
                 active = Icons.Filled.History, inactive = Icons.Outlined.HistoryToggleOff
             )
-        ), NavigationBarItem(
-            id = 3, label = "Setting", route = "setting_page", selected = false, icon = IconState(
-                active = Icons.Filled.Settings, inactive = Icons.Outlined.Settings
+        ),
+        NavigationBarItem(
+            id = 3, label = "Account", route = "account_page", selected = false, icon = IconState(
+                active = Icons.Filled.ManageAccounts, inactive = Icons.Outlined.ManageAccounts
             )
         )
     )

@@ -2,6 +2,8 @@ package com.bayutb.baystoreapp
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Devices.PIXEL_4_XL
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -11,6 +13,7 @@ import com.bayutb.baystoreapp.presentation.Screen
 import com.bayutb.baystoreapp.presentation.screen.catalog.CatalogScreen
 import com.bayutb.baystoreapp.presentation.screen.checkout.CheckOutScreen
 import com.bayutb.baystoreapp.presentation.screen.home.HomeScreen
+import com.bayutb.baystoreapp.ui.theme.BayStoreAppTheme
 
 @Composable
 fun App() {
@@ -54,3 +57,4 @@ fun NavController() {
         }
     }
 }
+

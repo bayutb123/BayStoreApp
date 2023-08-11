@@ -84,7 +84,7 @@ fun TransactionPage(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 content = {
 
-                    items(3) {
+                    items(15) {
                         Card(shape = MaterialTheme.shapes.medium) {
                             Column(
                                 modifier = modifier

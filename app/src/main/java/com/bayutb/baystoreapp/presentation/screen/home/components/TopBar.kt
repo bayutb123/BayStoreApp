@@ -1,5 +1,6 @@
 package com.bayutb.baystoreapp.presentation.screen.home.components
 
+import android.widget.ImageButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -9,9 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,8 +42,11 @@ fun TopBar(modifier: Modifier = Modifier) {
     Box(modifier.height(120.dp)) {
 
         Image(
-            painter = painterResource(id = R.drawable.top_banner), contentDescription = null,
-            contentScale = ContentScale.Crop, modifier = modifier.fillMaxSize(), colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary, BlendMode.Color)
+            painter = painterResource(id = R.drawable.top_banner),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = modifier.fillMaxSize(),
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary, BlendMode.Color)
         )
         Row(
             modifier
@@ -66,16 +72,17 @@ fun TopBar(modifier: Modifier = Modifier) {
                 modifier = modifier.weight(1f),
                 placeholder = { Text(text = "Search ...") }
             )
-            Image(
-                modifier = modifier
-                    .background(
-                        MaterialTheme.colorScheme.primaryContainer,
+            IconButton(onClick = { /*TODO*/ }, modifier.size(60.dp)) {
+                Icon(
+                    imageVector = Icons.Default.Notifications,
+                    contentDescription = "Notifications",
+                    modifier.background(
+                        color = MaterialTheme.colorScheme.onPrimary,
                         shape = CircleShape
-                    )
-                    .padding(12.dp),
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                imageVector = Icons.Default.Person, contentDescription = "Profile"
-            )
+                    ).padding(16.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         }
 
     }

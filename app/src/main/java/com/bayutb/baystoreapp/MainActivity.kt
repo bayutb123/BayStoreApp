@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,3 +40,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Preview(showBackground = true, device = Devices.PIXEL_4_XL)
+@Composable
+fun PreviewApp() {
+    BayStoreAppTheme {
+        App()
+    }
+}
