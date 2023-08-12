@@ -63,6 +63,7 @@ fun CheckOutScreen(
     var userServer by remember { mutableStateOf("") }
     var text by remember { mutableStateOf("Payment method") }
     var selectedLogo by remember { mutableStateOf("") }
+    var paymentSelectedIndex by remember { mutableStateOf(0) }
     var expanded by remember { mutableStateOf(false) }
     var isAccountChecked by remember { mutableStateOf(false) }
 
@@ -72,7 +73,7 @@ fun CheckOutScreen(
 
     Scaffold(topBar = { Topbar(imageUrl = item.game.imageUrl) }, bottomBar = {
         BottomBar(
-            price = item.item.price, selectedIndex = 1, isAccountChecked = user.id != 0
+            price = item.item.price, selectedIndex = 1, isAccountChecked = user.id != 0 && paymentSelectedIndex != 0
         )
     }) { paddingValues ->
         Column(
@@ -267,6 +268,7 @@ fun CheckOutScreen(
                                 text = it.name
                                 selectedLogo = it.logo
                                 expanded = false
+                                paymentSelectedIndex = it.id
                                 Toast.makeText(
                                     context, "${it.name} selected", Toast.LENGTH_SHORT
                                 ).show()

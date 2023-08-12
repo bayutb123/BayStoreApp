@@ -14,6 +14,7 @@ import com.bayutb.baystoreapp.presentation.Screen
 import com.bayutb.baystoreapp.presentation.screen.catalog.CatalogScreen
 import com.bayutb.baystoreapp.presentation.screen.checkout.CheckOutScreen
 import com.bayutb.baystoreapp.presentation.screen.home.HomeScreen
+import com.bayutb.baystoreapp.presentation.screen.login.LoginScreen
 import com.bayutb.baystoreapp.ui.theme.BayStoreAppTheme
 
 @Composable
@@ -27,8 +28,11 @@ fun NavController() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = Screen.Login.route
     ) {
+        composable(Screen.Login.route) {
+            LoginScreen(navController = navController)
+        }
         composable(Screen.Home.route) {
             HomeScreen(onHomeItemClicked = {
                 navController.navigate("${Screen.Catalog.route}/$it")

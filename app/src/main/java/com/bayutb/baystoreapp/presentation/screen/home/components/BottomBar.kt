@@ -2,7 +2,11 @@ package com.bayutb.baystoreapp.presentation.screen.home.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
@@ -73,15 +77,16 @@ fun BottomBar(
                 },
                 icon = {
                     AnimatedVisibility(visible = currentDestination?.hierarchy?.any { it.route == navItem[index].route } == true,
-                        exit = shrinkHorizontally(shrinkTowards = Alignment.Start),
-                        enter = expandHorizontally()) {
+                        exit = fadeOut(),
+                        enter = fadeIn()
+                    ) {
                         Icon(
                             navItem[index].icon.active, contentDescription = navItem[index].label
                         )
                     }
                     AnimatedVisibility(visible = currentDestination?.hierarchy?.any { it.route == navItem[index].route } == false,
-                        exit = shrinkHorizontally(shrinkTowards = Alignment.Start),
-                        enter = expandHorizontally()) {
+                        exit = fadeOut(),
+                        enter = fadeIn()) {
                         Icon(
                             navItem[index].icon.inactive, contentDescription = navItem[index].label
                         )

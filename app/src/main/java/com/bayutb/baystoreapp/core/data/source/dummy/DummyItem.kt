@@ -19,9 +19,9 @@ object DummyItem {
                         gameId = gameId + 1,
                         name = "Diamonds",
                         iconUrl = "https://static.wikia.nocookie.net/mobile-legends/images/e/ea/Diamond.png/revision/latest?cb=20211127070228",
-                        baseCount = id * 10,
-                        bonusItem = id * 2,
-                        price = id * 10 * 300 * 111 / 100
+                        baseCount = (id + 1) * 10,
+                        bonusItem = (id + 1) * 2,
+                        price = (id + 1) * 10 * 300 * 111 / 100
                     )
                 )
             }
