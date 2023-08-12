@@ -17,7 +17,7 @@ object DummyItem {
                     InGameCurrency(
                         id = id,
                         gameId = gameId + 1,
-                        name = "diamonds",
+                        name = "Diamonds",
                         iconUrl = "https://static.wikia.nocookie.net/mobile-legends/images/e/ea/Diamond.png/revision/latest?cb=20211127070228",
                         baseCount = id * 10,
                         bonusItem = id * 2,

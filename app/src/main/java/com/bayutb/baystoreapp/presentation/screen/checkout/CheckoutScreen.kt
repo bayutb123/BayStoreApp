@@ -16,13 +16,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -36,7 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,7 +46,6 @@ import com.bayutb.baystoreapp.domain.model.GameAccount
 import com.bayutb.baystoreapp.presentation.screen.TitleText
 import com.bayutb.baystoreapp.presentation.screen.convertToRupiah
 import com.bayutb.baystoreapp.ui.theme.BayStoreAppTheme
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,22 +55,26 @@ fun CheckOutScreen(
     gameId: Int,
     checkOutViewModel: CheckOutViewModel = hiltViewModel()
 ) {
-    val item = checkOutViewModel.getItemCurrencyById(itemId, gameId)
-    var user by remember { mutableStateOf(GameAccount(0,"User not found~~",0,0)) }
+    val context = LocalContext.current
+    // STATE
+    val defaultUser = GameAccount(0, "User not found~~", 0, 0)
+    var user by remember { mutableStateOf(defaultUser) }
     var userId by remember { mutableStateOf("") }
     var userServer by remember { mutableStateOf("") }
-    val paymentMethods = checkOutViewModel.paymentMethods
-    val context = LocalContext.current
-    var expanded by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf("Payment method") }
     var selectedLogo by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
     var isAccountChecked by remember { mutableStateOf(false) }
-    Scaffold(
-        topBar = { Topbar(imageUrl = item.game.imageUrl) },
-        bottomBar = { BottomBar(price = item.item.price, selectedIndex = 1,
-            isAccountChecked = user.id != 0
-        ) }
-    ) { paddingValues ->
+
+    // VIEWMODEL
+    val item = checkOutViewModel.getItemCurrencyById(itemId, gameId)
+    val paymentMethods = checkOutViewModel.paymentMethods
+
+    Scaffold(topBar = { Topbar(imageUrl = item.game.imageUrl) }, bottomBar = {
+        BottomBar(
+            price = item.item.price, selectedIndex = 1, isAccountChecked = user.id != 0
+        )
+    }) { paddingValues ->
         Column(
             modifier
                 .fillMaxWidth()
@@ -86,12 +86,11 @@ fun CheckOutScreen(
                 modifier = modifier.padding(horizontal = 16.dp)
             ) {
                 AsyncImage(
-                    model = item.game.imageUrl, contentDescription = "",
+                    model = item.game.imageUrl,
+                    contentDescription = null,
                     modifier
                         .size(100.dp)
-                        .clip(
-                            RoundedCornerShape(4.dp)
-                        )
+                        .clip(RoundedCornerShape(4.dp))
                 )
                 Column(
                     modifier
@@ -99,7 +98,10 @@ fun CheckOutScreen(
                         .padding(start = 8.dp)
                 ) {
                     Text(text = item.game.name)
-                    Text(text = item.item.name, fontSize = MaterialTheme.typography.bodySmall.fontSize)
+                    Text(
+                        text = item.item.name,
+                        fontSize = MaterialTheme.typography.bodySmall.fontSize
+                    )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         AsyncImage(
                             model = item.item.iconUrl,
@@ -133,8 +135,7 @@ fun CheckOutScreen(
                                 color = MaterialTheme.colorScheme.surface,
                                 shape = RoundedCornerShape(24.dp)
                             )
-                            .padding(24.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            .padding(24.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         OutlinedTextField(
                             value = userId,
@@ -158,22 +159,42 @@ fun CheckOutScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
                         onClick = {
-                            val result = checkOutViewModel.getAccountById(
-                                id = userId,
-                                server = userServer
-                            )
-                            if (result != null) {
-                                user = result
-                            }
-                            isAccountChecked = !isAccountChecked
-                        },
-                        modifier = modifier.fillMaxWidth()
+                            user = checkOutViewModel.getAccountById(
+                                id = userId, server = userServer
+                            ) ?: defaultUser
+                            isAccountChecked = true
+                        }, modifier = modifier.fillMaxWidth()
                     ) {
                         Text(text = "Check Account")
                     }
                 }
             }
-            AnimatedVisibility(visible = isAccountChecked) {
+            AnimatedVisibility(visible = user.id == 0) {
+                Column(
+                    modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.errorContainer,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(8.dp)
+                ) {
+                    Text(text = "Acount Information", fontWeight = FontWeight.Bold)
+                    Box(
+                        modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+                    ) {
+                        Column {
+                            Text(text = if (isAccountChecked) {
+                                "Account not found!"
+                            } else {
+                                "Input your username id and server"
+                            })
+                        }
+                    }
+                }
+            }
+            AnimatedVisibility(visible = user.id != 0) {
                 Column(
                     modifier
                         .fillMaxWidth()
@@ -185,9 +206,9 @@ fun CheckOutScreen(
                         .padding(8.dp)
                 ) {
                     Text(text = "Acount Information", fontWeight = FontWeight.Bold)
+
                     Row(
-                        modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround
+                        modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround
                     ) {
                         Column {
                             Text(text = "Account name")
@@ -204,15 +225,11 @@ fun CheckOutScreen(
                         }
                     }
                 }
-
             }
-            AnimatedVisibility(visible = isAccountChecked, modifier.padding(horizontal = 16.dp)) {
-                ExposedDropdownMenuBox(
-                    expanded = expanded,
-                    onExpandedChange = {
-                        expanded = !expanded
-                    }
-                ) {
+            AnimatedVisibility(visible = user.id != 0, modifier.padding(horizontal = 16.dp)) {
+                ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = {
+                    expanded = !expanded
+                }) {
                     TextField(
                         leadingIcon = {
                             AsyncImage(
@@ -237,31 +254,23 @@ fun CheckOutScreen(
                             unfocusedIndicatorColor = MaterialTheme.colorScheme.surface
                         )
                     )
-                    ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
+                    ExposedDropdownMenu(expanded = expanded,
+                        onDismissRequest = { expanded = false }) {
                         paymentMethods.onEach {
-                            DropdownMenuItem(
-                                leadingIcon = {
-                                    AsyncImage(
-                                        model = it.logo,
-                                        contentDescription = it.name,
-                                        modifier = modifier.size(16.dp)
-                                    )
-                                },
-                                text = { Text(text = it.name) },
-                                onClick = {
-                                    text = it.name
-                                    selectedLogo = it.logo
-                                    expanded = false
-                                    Toast.makeText(
-                                        context,
-                                        "${it.name} selected",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            )
+                            DropdownMenuItem(leadingIcon = {
+                                AsyncImage(
+                                    model = it.logo,
+                                    contentDescription = it.name,
+                                    modifier = modifier.size(16.dp)
+                                )
+                            }, text = { Text(text = it.name) }, onClick = {
+                                text = it.name
+                                selectedLogo = it.logo
+                                expanded = false
+                                Toast.makeText(
+                                    context, "${it.name} selected", Toast.LENGTH_SHORT
+                                ).show()
+                            })
                         }
                     }
                 }
