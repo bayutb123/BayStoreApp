@@ -32,11 +32,6 @@ fun HomePage(
     onItemClick: (Int) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-
-    val gamesState = homeViewModel.games.value
-    val hotGamesState = homeViewModel.hotGames.value
-
-    // TEMPORARY
     val allGames = homeViewModel.allGames
     val allHotGames = homeViewModel.allHotGames
 
@@ -81,9 +76,6 @@ fun HomePage(
                                 modifier.clickable { onItemClick(it.id) },
                                 game = it
                             )
-                            if (it.popularity > 50) {
-                                Log.d("HomeScreen", it.name)
-                            }
                         }
                     })
             }

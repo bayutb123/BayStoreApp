@@ -1,6 +1,7 @@
 package com.bayutb.baystoreapp
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Devices.PIXEL_4_XL
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,18 +43,24 @@ fun NavController() {
             val gameId = it.arguments?.getInt("gameId")
             CatalogScreen(
                 onCheckOut = { inGameCurrency ->
-                    navController.navigate("${Screen.Checkout.route}/${inGameCurrency.id}")
+                    Log.d(
+                        "AppNavigation",
+                        "Data : ${inGameCurrency.gameId} with item ${inGameCurrency.name}"
+                    )
+                    navController.navigate("${Screen.Checkout.route}/${inGameCurrency.id}/${inGameCurrency.gameId}")
                 }, gameId = gameId ?: 0
             )
         }
         composable(
-            "${Screen.Checkout.route}/{inGameCurrencyId}",
-            arguments = listOf(navArgument("inGameCurrencyId") {
-                type = NavType.IntType
-            })
+            "${Screen.Checkout.route}/{inGameCurrencyId}/{gameId}",
+            arguments = listOf(
+                navArgument("inGameCurrencyId") { type = NavType.IntType },
+                navArgument("gameId") { type = NavType.IntType }
+            )
         ) {
-            val gameId = it.arguments?.getInt("inGameCurrencyId")
-            CheckOutScreen(gameId = gameId ?: 0)
+            val itemId = it.arguments?.getInt("inGameCurrencyId")
+            val gameId = it.arguments?.getInt("gameId")
+            CheckOutScreen(itemId = itemId ?: 0, gameId = gameId ?: 0)
         }
     }
 }

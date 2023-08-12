@@ -19,15 +19,13 @@ class CatalogViewModel @Inject constructor(
     private val items : List<InGameCurrency> = _items
 
     // TEMPORARY DUMMY
-    var allItems = emptyList<InGameCurrency>()
+    private var allItems = emptyList<InGameCurrency>()
 
-    private var getItemsJob: Job? = null
     init {
         initiate()
     }
 
     private fun initiate() {
-        getItemsJob?.cancel()
         allItems = DummyItem.items
     }
 

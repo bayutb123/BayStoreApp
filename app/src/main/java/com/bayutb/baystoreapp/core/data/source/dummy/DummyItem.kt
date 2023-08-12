@@ -11,8 +11,8 @@ object DummyItem {
 
     init {
         repeat(15) {// TOTAL GAME ITEMS
-            repeat(20) { gameId -> // TOTAL CURRENT GAMES
-                val id = it + 1
+            repeat(12) { gameId -> // TOTAL CURRENT GAMES
+                val id = it
                 _items.add(
                     InGameCurrency(
                         id = id,

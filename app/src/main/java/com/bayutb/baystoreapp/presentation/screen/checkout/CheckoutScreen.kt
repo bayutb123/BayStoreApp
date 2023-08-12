@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -35,34 +36,44 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.bayutb.baystoreapp.domain.model.GameAccount
 import com.bayutb.baystoreapp.presentation.screen.TitleText
+import com.bayutb.baystoreapp.presentation.screen.convertToRupiah
 import com.bayutb.baystoreapp.ui.theme.BayStoreAppTheme
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckOutScreen(
     modifier: Modifier = Modifier,
+    itemId: Int,
     gameId: Int,
     checkOutViewModel: CheckOutViewModel = hiltViewModel()
 ) {
+    val item = checkOutViewModel.getItemCurrencyById(itemId, gameId)
+    var user by remember { mutableStateOf(GameAccount(0,"User not found~~",0,0)) }
+    var userId by remember { mutableStateOf("") }
+    var userServer by remember { mutableStateOf("") }
     val paymentMethods = checkOutViewModel.paymentMethods
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf("Payment method") }
     var selectedLogo by remember { mutableStateOf("") }
     var isAccountChecked by remember { mutableStateOf(false) }
-    val imageUrl =
-        "https://yt3.googleusercontent.com/JnmzP-Ti7W8hygyWSLzJqoLkDLbhuQ2BEGNlq-pMmK8S_CjJhqzDr0D32QSMk-HZriAKh_dlsg=s900-c-k-c0x00ffffff-no-rj"
     Scaffold(
-        topBar = { Topbar(imageUrl = imageUrl) },
-        bottomBar = { BottomBar(price = 150000, selectedIndex = 1) }
+        topBar = { Topbar(imageUrl = item.game.imageUrl) },
+        bottomBar = { BottomBar(price = item.item.price, selectedIndex = 1,
+            isAccountChecked = user.id != 0
+        ) }
     ) { paddingValues ->
         Column(
             modifier
@@ -75,7 +86,7 @@ fun CheckOutScreen(
                 modifier = modifier.padding(horizontal = 16.dp)
             ) {
                 AsyncImage(
-                    model = imageUrl, contentDescription = "",
+                    model = item.game.imageUrl, contentDescription = "",
                     modifier
                         .size(100.dp)
                         .clip(
@@ -87,24 +98,24 @@ fun CheckOutScreen(
                         .weight(1f)
                         .padding(start = 8.dp)
                 ) {
-                    Text(text = "PUBG MOBILE")
-                    Text(text = "UC", fontSize = MaterialTheme.typography.bodySmall.fontSize)
+                    Text(text = item.game.name)
+                    Text(text = item.item.name, fontSize = MaterialTheme.typography.bodySmall.fontSize)
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         AsyncImage(
-                            model = "https://www.vhv.rs/dpng/d/17-179454_pubg-uc-png-transparent-png.png",
+                            model = item.item.iconUrl,
                             contentDescription = "",
                             modifier
                                 .size(16.dp)
                                 .padding(end = 4.dp)
                         )
                         Text(
-                            text = "744 + 101",
+                            text = "${item.item.baseCount} + ${item.item.bonusItem}",
                             fontStyle = FontStyle.Italic,
                             fontSize = MaterialTheme.typography.bodyMedium.fontSize
                         )
                     }
                 }
-                Text(text = "Rp. 150.000", fontWeight = FontWeight.Bold)
+                Text(text = convertToRupiah(item.item.price), fontWeight = FontWeight.Bold)
             }
             Spacer(modifier = Modifier.height(16.dp))
             Box(
@@ -126,25 +137,36 @@ fun CheckOutScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         OutlinedTextField(
-                            value = "",
-                            onValueChange = {},
+                            value = userId,
+                            onValueChange = { userId = it },
                             modifier.weight(0.7f),
                             shape = RoundedCornerShape(32),
                             singleLine = true,
-                            placeholder = { Text(text = "User ID") }
+                            placeholder = { Text(text = "User ID") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         )
                         OutlinedTextField(
-                            value = "",
-                            onValueChange = {},
+                            value = userServer,
+                            onValueChange = { userServer = it },
                             modifier.weight(0.3f),
                             shape = RoundedCornerShape(32),
                             singleLine = true,
-                            placeholder = { Text(text = "Server") }
+                            placeholder = { Text(text = "Server") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
-                        onClick = { isAccountChecked = true },
+                        onClick = {
+                            val result = checkOutViewModel.getAccountById(
+                                id = userId,
+                                server = userServer
+                            )
+                            if (result != null) {
+                                user = result
+                            }
+                            isAccountChecked = !isAccountChecked
+                        },
                         modifier = modifier.fillMaxWidth()
                     ) {
                         Text(text = "Check Account")
@@ -177,8 +199,8 @@ fun CheckOutScreen(
                             Text(text = ":")
                         }
                         Column(Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-                            Text(text = "RRQ GGGG")
-                            Text(text = "60")
+                            Text(text = user.name)
+                            Text(text = "${user.level}")
                         }
                     }
                 }
@@ -207,7 +229,14 @@ fun CheckOutScreen(
                             .menuAnchor(),
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                        })
+                        },
+                        shape = RoundedCornerShape(8.dp),
+                        colors = TextFieldDefaults.textFieldColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            focusedIndicatorColor = MaterialTheme.colorScheme.surface,
+                            unfocusedIndicatorColor = MaterialTheme.colorScheme.surface
+                        )
+                    )
                     ExposedDropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
@@ -230,8 +259,7 @@ fun CheckOutScreen(
                                         context,
                                         "${it.name} selected",
                                         Toast.LENGTH_SHORT
-                                    )
-                                        .show()
+                                    ).show()
                                 }
                             )
                         }
@@ -246,6 +274,6 @@ fun CheckOutScreen(
 @Composable
 fun Preview() {
     BayStoreAppTheme {
-        CheckOutScreen(gameId = 1)
+        CheckOutScreen(itemId = 1, gameId = 1)
     }
 }
