@@ -31,11 +31,7 @@ class CheckOutViewModel @Inject constructor(
         )
     }
 
-    fun getGameDetailById(id: Int) : Game {
-        return DummyGame.games.first() {
-            it.id == id
-        }
-    }
+
 
     fun getAccountById(id: String, server: String): GameAccount? {
         val idReal = if (id == "") 0 else id.toInt()

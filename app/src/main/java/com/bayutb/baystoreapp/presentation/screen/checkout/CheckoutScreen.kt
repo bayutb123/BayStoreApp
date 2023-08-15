@@ -1,5 +1,6 @@
 package com.bayutb.baystoreapp.presentation.screen.checkout
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.bayutb.baystoreapp.domain.model.GameAccount
+import com.bayutb.baystoreapp.domain.model.InGameCurrency
 import com.bayutb.baystoreapp.presentation.screen.TitleText
 import com.bayutb.baystoreapp.presentation.screen.convertToRupiah
 import com.bayutb.baystoreapp.ui.theme.BayStoreAppTheme
@@ -53,7 +55,8 @@ fun CheckOutScreen(
     modifier: Modifier = Modifier,
     itemId: Int,
     gameId: Int,
-    checkOutViewModel: CheckOutViewModel = hiltViewModel()
+    checkOutViewModel: CheckOutViewModel = hiltViewModel(),
+    onCheckOut: (OrderDetail) -> Unit
 ) {
     val context = LocalContext.current
     // STATE
@@ -64,6 +67,7 @@ fun CheckOutScreen(
     var text by remember { mutableStateOf("Payment method") }
     var selectedLogo by remember { mutableStateOf("") }
     var paymentSelectedIndex by remember { mutableStateOf(0) }
+    Log.d("Payment Selected", paymentSelectedIndex.toString())
     var expanded by remember { mutableStateOf(false) }
     var isAccountChecked by remember { mutableStateOf(false) }
 
@@ -73,7 +77,17 @@ fun CheckOutScreen(
 
     Scaffold(topBar = { Topbar(imageUrl = item.game.imageUrl) }, bottomBar = {
         BottomBar(
-            price = item.item.price, selectedIndex = 1, isAccountChecked = user.id != 0 && paymentSelectedIndex != 0
+            price = item.item.price,
+            account = user,
+            paymentSelected = paymentSelectedIndex,
+            onCheckOut = {
+                val orderDetail = OrderDetail(
+                    user,
+                    item.item,
+                    paymentMethods[paymentSelectedIndex - 1]
+                )
+                onCheckOut(orderDetail)
+            }
         )
     }) { paddingValues ->
         Column(
@@ -285,6 +299,8 @@ fun CheckOutScreen(
 @Composable
 fun Preview() {
     BayStoreAppTheme {
-        CheckOutScreen(itemId = 1, gameId = 1)
+        CheckOutScreen(itemId = 1, gameId = 1) {
+
+        }
     }
 }

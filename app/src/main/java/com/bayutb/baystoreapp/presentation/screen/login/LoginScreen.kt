@@ -46,7 +46,7 @@ import com.bayutb.baystoreapp.ui.theme.BayStoreAppTheme
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
 ) {
     var phoneLogin by remember { mutableStateOf("") }
     Box(
@@ -113,7 +113,11 @@ fun LoginScreen(
             }
             Text(text = "--- or ---")
             Button(
-                onClick = { navController.navigate(Screen.Home.route) },
+                onClick = { navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Login.route) {
+                        inclusive = true
+                    }
+                } },
                 modifier = modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp)
             ) {
