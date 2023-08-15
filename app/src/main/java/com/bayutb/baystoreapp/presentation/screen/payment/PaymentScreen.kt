@@ -1,5 +1,6 @@
 package com.bayutb.baystoreapp.presentation.screen.payment
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -276,6 +277,9 @@ fun PaymentScreen(
             }
         }
 
+    }
+    BackHandler {
+        onBackPressed()
     }
 }
 

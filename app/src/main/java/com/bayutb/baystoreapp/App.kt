@@ -62,7 +62,7 @@ fun NavController() {
         ) { it ->
             val itemId = it.arguments?.getInt("inGameCurrencyId")
             val gameId = it.arguments?.getInt("gameId")
-            CheckOutScreen(itemId = itemId ?: 0, gameId = gameId ?: 0) {order ->
+            CheckOutScreen(itemId = itemId ?: 0, gameId = gameId ?: 0) { order ->
                 navController.navigate("${Screen.Payment.route}/${order.account.id}/${order.inGameCurrency.id}/${order.paymentMethod.id}")
             }
         }
@@ -81,7 +81,11 @@ fun NavController() {
                 itemId = itemId ?: 0,
                 paymentId = paymentId ?: 0
             ) {
-                navController.popBackStack(Screen.Home.route, inclusive = false, saveState = false)
+                navController.popBackStack(
+                    Screen.Home.route,
+                    inclusive = false,
+                    saveState = false
+                )
             }
         }
     }
