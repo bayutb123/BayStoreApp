@@ -1,5 +1,6 @@
 package com.bayutb.baystoreapp.presentation.screen.payment
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -43,12 +44,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -58,19 +62,23 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bayutb.baystoreapp.R
 import com.bayutb.baystoreapp.presentation.Screen
 import com.bayutb.baystoreapp.presentation.screen.TitleText
+import com.bayutb.baystoreapp.presentation.screen.convertToRupiah
 import com.bayutb.baystoreapp.ui.theme.BayStoreAppTheme
 import kotlinx.coroutines.delay
+import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
     accountId: Int,
     itemId: Int,
     paymentId: Int,
     onBackPressed: () -> Unit
 ) {
+    val paymentViewModel:PaymentViewModel = hiltViewModel()
+    val orderData = paymentViewModel.getOrderData(accountId, itemId, paymentId)
+    val clipboardManager = LocalClipboardManager.current
     val loading by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.ani_stick))
     val loadingProgress by animateLottieCompositionAsState(
         composition = loading,
@@ -78,7 +86,7 @@ fun PaymentScreen(
     )
     var isLoading by remember { mutableStateOf(true) }
     LaunchedEffect(key1 = null) {
-        delay(1000L)
+        delay(5000L)
         isLoading = false
     }
     val generateQR by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.ani_qr_enter))
@@ -167,7 +175,7 @@ fun PaymentScreen(
                                         Text(text = "Price", modifier = modifier.weight(0.4f))
                                         Text(text = " : ", modifier = modifier.weight(0.1f))
                                         Text(
-                                            text = "150.000",
+                                            text = convertToRupiah(orderData.inGameCurrency.price * 100 / 111),
                                             textAlign = TextAlign.End,
                                             modifier = modifier.weight(1f)
                                         )
@@ -179,7 +187,7 @@ fun PaymentScreen(
                                         Text(text = "Tax", modifier = modifier.weight(0.4f))
                                         Text(text = " : ", modifier = modifier.weight(0.1f))
                                         Text(
-                                            text = "16.500",
+                                            text = convertToRupiah(orderData.inGameCurrency.price * 11 / 100),
                                             textAlign = TextAlign.End,
                                             modifier = modifier.weight(1f)
                                         )
@@ -199,7 +207,7 @@ fun PaymentScreen(
                                             fontSize = MaterialTheme.typography.titleMedium.fontSize,
                                         )
                                         Text(
-                                            text = "165.000",
+                                            text = convertToRupiah(orderData.inGameCurrency.price),
                                             textAlign = TextAlign.End,
                                             fontWeight = FontWeight.Bold,
                                             fontSize = MaterialTheme.typography.titleMedium.fontSize,
@@ -221,13 +229,15 @@ fun PaymentScreen(
                                         .fillMaxWidth()
                                 ) {
                                     Spacer(modifier = modifier.height(16.dp))
-                                    Text(text = "Go-Pay VA")
+                                    Text(text = orderData.paymentMethod.name)
                                     Text(
-                                        text = "094549409090497",
+                                        text = orderData.paymentCode.toString(),
                                         fontWeight = FontWeight.Bold,
                                         fontSize = MaterialTheme.typography.titleLarge.fontSize
                                     )
-                                    TextButton(onClick = { /*TODO*/ }) {
+                                    TextButton(onClick = {
+                                        clipboardManager.setText(AnnotatedString(orderData.paymentCode.toString()))
+                                    }) {
                                         Text(text = "Copy")
                                     }
                                 }

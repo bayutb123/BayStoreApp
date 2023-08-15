@@ -27,4 +27,8 @@ object DummyGameAccount {
     }
 
     fun getAllGames() : List<GameAccount> = gameAccounts
+
+    fun getGameAccountById(id: Int) : GameAccount {
+        return gameAccounts.first() { it.id == id }
+    }
 }

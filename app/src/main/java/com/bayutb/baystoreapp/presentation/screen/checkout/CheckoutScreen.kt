@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.bayutb.baystoreapp.domain.model.GameAccount
-import com.bayutb.baystoreapp.domain.model.InGameCurrency
+import com.bayutb.baystoreapp.domain.model.OrderDetail
 import com.bayutb.baystoreapp.presentation.screen.TitleText
 import com.bayutb.baystoreapp.presentation.screen.convertToRupiah
 import com.bayutb.baystoreapp.ui.theme.BayStoreAppTheme
@@ -84,7 +84,8 @@ fun CheckOutScreen(
                 val orderDetail = OrderDetail(
                     user,
                     item.item,
-                    paymentMethods[paymentSelectedIndex - 1]
+                    paymentMethods[paymentSelectedIndex - 1],
+                    null
                 )
                 onCheckOut(orderDetail)
             }

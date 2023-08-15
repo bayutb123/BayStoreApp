@@ -76,7 +76,6 @@ fun NavController() {
             val itemId = it.arguments?.getInt("itemId")
             val paymentId = it.arguments?.getInt("paymentId")
             PaymentScreen(
-                navController = navController,
                 accountId = accountId ?: 0,
                 itemId = itemId ?: 0,
                 paymentId = paymentId ?: 0

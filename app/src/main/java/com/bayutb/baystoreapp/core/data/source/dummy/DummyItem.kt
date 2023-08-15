@@ -33,4 +33,8 @@ object DummyItem {
             items
         }
     }
+
+    fun getItemById(id: Int) : InGameCurrency {
+        return items.first() {it.id == id}
+    }
 }
