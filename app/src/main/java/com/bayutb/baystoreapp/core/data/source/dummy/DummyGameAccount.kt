@@ -24,6 +24,14 @@ object DummyGameAccount {
                 level = 60
             )
         )
+        _gameAccounts.add(
+            GameAccount(
+                id = 254969130,
+                name = "i9-NORTH",
+                server = 9345,
+                level = 80
+            )
+        )
     }
 
     fun getAllGames() : List<GameAccount> = gameAccounts

@@ -3,6 +3,7 @@ package com.bayutb.baystoreapp.presentation.screen.payment
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -76,7 +77,8 @@ fun PaymentScreen(
     paymentId: Int,
     onBackPressed: () -> Unit
 ) {
-    val paymentViewModel:PaymentViewModel = hiltViewModel()
+    val paymentViewModel: PaymentViewModel = hiltViewModel()
+    var isPaid by remember { mutableStateOf(false) }
     val orderData = paymentViewModel.getOrderData(accountId, itemId, paymentId)
     val clipboardManager = LocalClipboardManager.current
     val loading by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.ani_stick))
@@ -85,9 +87,31 @@ fun PaymentScreen(
         iterations = LottieConstants.IterateForever
     )
     var isLoading by remember { mutableStateOf(true) }
+    var isSuccess by remember { mutableStateOf(false) }
+    val success by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.ani_success))
+    val successProgress by animateLottieCompositionAsState(
+        composition = success,
+        isPlaying = isSuccess
+    )
     LaunchedEffect(key1 = null) {
-        delay(5000L)
+        delay(1000L)
         isLoading = false
+    }
+    LaunchedEffect(key1 = isPaid) {
+        if (isPaid) {
+            isLoading = true
+            // PROCESSING PAYMENT WILL BE HERE
+            delay(2000L)
+            isLoading = false
+            // ANIMATION DELAY
+            delay(500L)
+            isSuccess = true
+            // SUCCESS ANIMATION DISPLAY TIME
+            delay(3000L)
+            isPaid = false
+            // GO BACK TO HOME
+            onBackPressed()
+        }
     }
     val generateQR by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.ani_qr_enter))
     var isQRRequested by remember { mutableStateOf(false) }
@@ -99,7 +123,7 @@ fun PaymentScreen(
     Scaffold(
         topBar = {
             AnimatedVisibility(
-                visible = !isQRRequested && !isLoading,
+                visible = !isQRRequested && !isLoading && !isPaid,
                 enter = expandVertically(),
                 exit = shrinkVertically()
             ) {
@@ -125,11 +149,26 @@ fun PaymentScreen(
                         .fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "preparing your payment method..",
-                        modifier = modifier.offset(y = 100.dp)
-                    )
+                    if (!isPaid) {
+                        Text(
+                            text = "preparing your payment method..",
+                            modifier = modifier.offset(y = 100.dp)
+                        )
+                    }
                     LottieAnimation(composition = loading, progress = { loadingProgress })
+                }
+            }
+            AnimatedVisibility(
+                visible = isPaid && !isLoading,
+                enter = EnterTransition.None,
+                exit = fadeOut()
+            ) {
+                Box(
+                    modifier = modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LottieAnimation(composition = success, progress = { successProgress })
                 }
             }
             AnimatedVisibility(
@@ -216,37 +255,71 @@ fun PaymentScreen(
                                     }
                                     Text(text = "Please complete this payment next 24 hours")
                                 }
-                                TitleText(value = "Payment Code")
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    modifier = modifier
-                                        .padding(horizontal = 16.dp)
-                                        .padding(top = 8.dp)
-                                        .background(
-                                            MaterialTheme.colorScheme.primaryContainer,
-                                            RoundedCornerShape(8.dp)
+                                if (orderData.paymentMethod.id != 1) {
+                                    TitleText(value = "Payment Code")
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = modifier
+                                            .padding(horizontal = 16.dp)
+                                            .padding(top = 8.dp)
+                                            .background(
+                                                MaterialTheme.colorScheme.primaryContainer,
+                                                RoundedCornerShape(8.dp)
+                                            )
+                                            .fillMaxWidth()
+                                    ) {
+                                        Spacer(modifier = modifier.height(16.dp))
+                                        Text(text = orderData.paymentMethod.name)
+                                        Text(
+                                            text = orderData.paymentCode.toString(),
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = MaterialTheme.typography.titleLarge.fontSize
                                         )
-                                        .fillMaxWidth()
-                                ) {
-                                    Spacer(modifier = modifier.height(16.dp))
-                                    Text(text = orderData.paymentMethod.name)
-                                    Text(
-                                        text = orderData.paymentCode.toString(),
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = MaterialTheme.typography.titleLarge.fontSize
-                                    )
-                                    TextButton(onClick = {
-                                        clipboardManager.setText(AnnotatedString(orderData.paymentCode.toString()))
-                                    }) {
-                                        Text(text = "Copy")
+                                        TextButton(onClick = {
+                                            clipboardManager.setText(AnnotatedString(orderData.paymentCode.toString()))
+                                        }) {
+                                            Text(text = "Copy")
+                                        }
+                                    }
+                                } else {
+                                    TitleText(value = "Bay-Wallet")
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = modifier
+                                            .padding(horizontal = 16.dp)
+                                            .padding(top = 8.dp)
+                                            .background(
+                                                MaterialTheme.colorScheme.primaryContainer,
+                                                RoundedCornerShape(8.dp)
+                                            )
+                                            .padding(vertical = 16.dp)
+                                            .fillMaxWidth()
+                                    ) {
+                                        Text(text = "Bay-Wallet Balance")
+                                        Text(
+                                            text = convertToRupiah(900000),
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = MaterialTheme.typography.titleLarge.fontSize
+                                        )
                                     }
                                 }
                             }
                         }
-                        ElevatedButton(onClick = { isQRRequested = true }) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(imageVector = Icons.Default.QrCode, contentDescription = null)
-                                Text(text = "Show QR Code")
+                        if (orderData.paymentMethod.id != 1) {
+                            ElevatedButton(onClick = { isQRRequested = true }) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Default.QrCode,
+                                        contentDescription = null
+                                    )
+                                    Text(text = "Show QR Code")
+                                }
+                            }
+                        } else {
+                            Button(onClick = {
+                                isPaid = true
+                            }) {
+                                Text(text = "Confirm Payment")
                             }
                         }
                     }
