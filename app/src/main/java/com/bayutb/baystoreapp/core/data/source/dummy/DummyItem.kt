@@ -1,5 +1,6 @@
 package com.bayutb.baystoreapp.core.data.source.dummy
 
+import android.util.Log
 import com.bayutb.baystoreapp.domain.model.Game
 import com.bayutb.baystoreapp.domain.model.InGameCurrency
 import kotlinx.coroutines.flow.Flow
@@ -8,11 +9,12 @@ import kotlinx.coroutines.flow.flow
 object DummyItem {
     private val _items = mutableListOf<InGameCurrency>()
     val items: List<InGameCurrency> = _items
-
+    val currentItemId = 0
     init {
         repeat(15) {// TOTAL GAME ITEMS
             repeat(12) { gameId -> // TOTAL CURRENT GAMES
-                val id = it
+                val id = currentItemId
+                Log.d("DummyItem", "Generate itemId $id")
                 _items.add(
                     InGameCurrency(
                         id = id,

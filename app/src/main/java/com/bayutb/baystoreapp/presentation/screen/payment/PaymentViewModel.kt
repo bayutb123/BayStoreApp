@@ -1,14 +1,21 @@
 package com.bayutb.baystoreapp.presentation.screen.payment
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.bayutb.baystoreapp.domain.usecase.OrderUseCase
 import com.bayutb.baystoreapp.domain.model.OrderDetail
+import com.bayutb.baystoreapp.domain.model.Orders
+import com.bayutb.baystoreapp.domain.usecase.DatabaseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
 class PaymentViewModel @Inject constructor(
-    private val useCase: OrderUseCase
+    private val useCase: OrderUseCase,
+    private val databaseUseCase: DatabaseUseCase
 ) : ViewModel () {
     fun getOrderData(
         accountId: Int,
@@ -21,5 +28,21 @@ class PaymentViewModel @Inject constructor(
             paymentMethod = useCase.getPaymentById(paymentId),
             paymentCode = 94431354685494
         )
+    }
+
+    fun insertOrder(orderDetail: OrderDetail) {
+        viewModelScope.launch {
+            val date = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+            val currentDate = date.format(Date())
+            databaseUseCase.insertOrder(
+                Orders(
+                    id = 0,
+                    clientId = 1,
+                    itemId = orderDetail.inGameCurrency.id,
+                    paymentId = orderDetail.paymentMethod.id,
+                    date = currentDate
+                )
+            )
+        }
     }
 }

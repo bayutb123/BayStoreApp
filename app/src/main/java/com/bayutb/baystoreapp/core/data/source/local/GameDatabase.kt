@@ -1,5 +1,15 @@
 package com.bayutb.baystoreapp.core.data.source.local
 
-abstract class GameDatabase {
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import com.bayutb.baystoreapp.domain.model.OrderDetail
+import com.bayutb.baystoreapp.domain.model.Orders
 
+@Database(
+    exportSchema = false,
+    entities = [Orders::class],
+    version = 1
+)
+abstract class GameDatabase() : RoomDatabase() {
+    abstract fun getDao(): GameDao
 }

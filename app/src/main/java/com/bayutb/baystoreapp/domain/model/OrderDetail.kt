@@ -1,5 +1,8 @@
 package com.bayutb.baystoreapp.domain.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.bayutb.baystoreapp.domain.model.GameAccount
 import com.bayutb.baystoreapp.domain.model.InGameCurrency
 import com.bayutb.baystoreapp.domain.model.PaymentMethod
