@@ -89,7 +89,14 @@ dependencies {
     // COIL
     implementation("io.coil-kt:coil-compose:2.4.0")
 
+    // LOTTIE
     implementation("com.airbnb.android:lottie-compose:6.1.0")
+
+    // GSON
+    implementation ("com.google.code.gson:gson:2.10.1")
+
+    // RETROFIT
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
 }
 
 // Allow references to generated code

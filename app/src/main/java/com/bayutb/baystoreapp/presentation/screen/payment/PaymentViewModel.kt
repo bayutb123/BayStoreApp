@@ -38,7 +38,11 @@ class PaymentViewModel @Inject constructor(
                 Orders(
                     id = 0,
                     clientId = 1,
+                    accountId = orderDetail.account.id,
+                    gameId = orderDetail.inGameCurrency.gameId,
                     itemId = orderDetail.inGameCurrency.id,
+                    itemName = orderDetail.inGameCurrency.name,
+                    itemPrice = orderDetail.inGameCurrency.price,
                     paymentId = orderDetail.paymentMethod.id,
                     date = currentDate
                 )

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sort
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.bayutb.baystoreapp.presentation.screen.convertToRupiah
 import com.bayutb.baystoreapp.ui.theme.BayStoreAppTheme
@@ -44,6 +46,8 @@ import com.bayutb.baystoreapp.ui.theme.BayStoreAppTheme
 fun TransactionPage(
     modifier: Modifier = Modifier
 ) {
+    val transactionViewModel :TransactionViewModel = hiltViewModel()
+    val transactions = transactionViewModel.transactions
     var isSortVisible by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
@@ -84,7 +88,7 @@ fun TransactionPage(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 content = {
 
-                    items(15) {
+                    items(transactions) {order ->
                         Card(shape = MaterialTheme.shapes.medium) {
                             Column(
                                 modifier = modifier
@@ -109,7 +113,7 @@ fun TransactionPage(
                                             .padding(horizontal = 8.dp)
                                     ) {
                                         Text(
-                                            text = "12/05/2023",
+                                            text = order.date,
                                             fontSize = MaterialTheme.typography.bodySmall.fontSize
                                         )
                                         Text(
@@ -125,7 +129,7 @@ fun TransactionPage(
                                         )
                                     }
                                     Text(
-                                        text = convertToRupiah(78000),
+                                        text = convertToRupiah(order.itemPrice),
                                         fontSize = MaterialTheme.typography.labelLarge.fontSize,
                                         color = MaterialTheme.colorScheme.primary,
                                         fontWeight = FontWeight.Bold,

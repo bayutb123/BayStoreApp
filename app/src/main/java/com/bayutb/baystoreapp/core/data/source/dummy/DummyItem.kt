@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.flow
 object DummyItem {
     private val _items = mutableListOf<InGameCurrency>()
     val items: List<InGameCurrency> = _items
-    val currentItemId = 0
+    private const val currentItemId = 0
     init {
         repeat(15) {// TOTAL GAME ITEMS
             repeat(12) { gameId -> // TOTAL CURRENT GAMES
-                val id = currentItemId
+                val id = it.inc()
                 Log.d("DummyItem", "Generate itemId $id")
                 _items.add(
                     InGameCurrency(

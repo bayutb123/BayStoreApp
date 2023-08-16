@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -44,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -185,8 +187,31 @@ fun PaymentScreen(
                         ) {
 
                             Column {
+                                TitleText(value = "Account Details")
+                                Row(
+                                    modifier.padding(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Account Name", modifier = modifier.weight(0.4f),
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                    )
+                                    Text(
+                                        text = " : ", modifier = modifier.weight(0.1f),
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                    )
+                                    Text(
+                                        text = orderData.account.name,
+                                        textAlign = TextAlign.End,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                                        modifier = modifier.weight(1f)
+                                    )
+                                }
                                 TitleText(value = "Order Details")
-                                Column(modifier.padding(16.dp)) {
+                                Column(modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceBetween
@@ -224,6 +249,7 @@ fun PaymentScreen(
                                             modifier = modifier.weight(1f)
                                         )
                                     }
+                                    Divider(color = MaterialTheme.colorScheme.primary, thickness = 1.dp)
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceBetween
@@ -246,7 +272,13 @@ fun PaymentScreen(
                                             modifier = modifier.weight(1f)
                                         )
                                     }
-                                    Text(text = "Please complete this payment next 24 hours")
+
+
+                                    Text(
+                                        text = "Please complete this payment next 24 hours",
+                                        fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                                        fontStyle = FontStyle.Italic
+                                    )
                                 }
                                 if (orderData.paymentMethod.id != 1) {
                                     TitleText(value = "Payment Code")
@@ -275,7 +307,6 @@ fun PaymentScreen(
                                         }
                                     }
                                 } else {
-                                    TitleText(value = "Bay-Wallet")
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         modifier = modifier

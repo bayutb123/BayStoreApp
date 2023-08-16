@@ -8,7 +8,11 @@ data class Orders(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val clientId: Int?,
+    val accountId: Int,
+    val gameId: Int,
     val itemId: Int,
+    val itemName: String,
+    val itemPrice : Int,
     val paymentId: Int,
     val date: String
 )

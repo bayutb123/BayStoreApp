@@ -8,7 +8,7 @@ import com.bayutb.baystoreapp.domain.model.Orders
 @Database(
     exportSchema = false,
     entities = [Orders::class],
-    version = 1
+    version = 2
 )
 abstract class GameDatabase() : RoomDatabase() {
     abstract fun getDao(): GameDao
