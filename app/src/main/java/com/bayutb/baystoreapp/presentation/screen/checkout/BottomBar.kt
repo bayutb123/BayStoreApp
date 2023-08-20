@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.bayutb.baystoreapp.domain.model.GameAccount
 import com.bayutb.baystoreapp.domain.model.InGameCurrency
 import com.bayutb.baystoreapp.domain.model.PaymentMethod
+import com.bayutb.baystoreapp.domain.model.UserIGN
 import com.bayutb.baystoreapp.presentation.screen.convertToRupiah
 
 @Composable
@@ -23,7 +24,7 @@ fun BottomBar(
     modifier: Modifier = Modifier,
     price: Int,
     paymentSelected: Int,
-    account: GameAccount,
+    account: UserIGN,
     onCheckOut: () -> Unit
 ) {
 
@@ -43,7 +44,7 @@ fun BottomBar(
             }
             Button(onClick = {
                 onCheckOut()
-            }, enabled = account.id != 0 && paymentSelected > 0) {
+            }, enabled = account.inGameNickName != "" && paymentSelected > 0) {
                 Text(text = "Checkout")
             }
         }

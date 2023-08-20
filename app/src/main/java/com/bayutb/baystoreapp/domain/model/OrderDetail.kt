@@ -8,7 +8,7 @@ import com.bayutb.baystoreapp.domain.model.InGameCurrency
 import com.bayutb.baystoreapp.domain.model.PaymentMethod
 
 data class OrderDetail(
-    val account: GameAccount,
+    val account: UserIGN,
     val inGameCurrency: InGameCurrency,
     val paymentMethod: PaymentMethod,
     val paymentCode: Long?

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.bayutb.baystoreapp.domain.usecase.OrderUseCase
 import com.bayutb.baystoreapp.domain.model.OrderDetail
 import com.bayutb.baystoreapp.domain.model.Orders
+import com.bayutb.baystoreapp.domain.model.UserIGN
 import com.bayutb.baystoreapp.domain.usecase.DatabaseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -18,12 +19,12 @@ class PaymentViewModel @Inject constructor(
     private val databaseUseCase: DatabaseUseCase
 ) : ViewModel () {
     fun getOrderData(
-        accountId: Int,
+        inGameNickname: String,
         itemId: Int,
         paymentId: Int
     ) : OrderDetail {
         return OrderDetail(
-            account = useCase.getAccountById(accountId),
+            account = UserIGN(inGameNickname),
             inGameCurrency = useCase.getItemById(itemId),
             paymentMethod = useCase.getPaymentById(paymentId),
             paymentCode = 94431354685494
@@ -38,7 +39,7 @@ class PaymentViewModel @Inject constructor(
                 Orders(
                     id = 0,
                     clientId = 1,
-                    accountId = orderDetail.account.id,
+                    inGameNickname = orderDetail.account.inGameNickName,
                     gameId = orderDetail.inGameCurrency.gameId,
                     itemId = orderDetail.inGameCurrency.id,
                     itemName = orderDetail.inGameCurrency.name,

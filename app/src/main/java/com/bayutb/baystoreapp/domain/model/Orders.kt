@@ -8,7 +8,7 @@ data class Orders(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val clientId: Int?,
-    val accountId: Int,
+    val inGameNickname: String,
     val gameId: Int,
     val itemId: Int,
     val itemName: String,

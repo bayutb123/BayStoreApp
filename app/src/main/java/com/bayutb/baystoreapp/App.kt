@@ -63,20 +63,20 @@ fun NavController() {
             val itemId = it.arguments?.getInt("inGameCurrencyId")
             val gameId = it.arguments?.getInt("gameId")
             CheckOutScreen(itemId = itemId ?: 0, gameId = gameId ?: 0) { order ->
-                navController.navigate("${Screen.Payment.route}/${order.account.id}/${order.inGameCurrency.id}/${order.paymentMethod.id}")
+                navController.navigate("${Screen.Payment.route}/${order.account.inGameNickName}/${order.inGameCurrency.id}/${order.paymentMethod.id}")
             }
         }
         composable("${Screen.Payment.route}/{accountId}/{itemId}/{paymentId}",
             arguments = listOf(
-                navArgument("accountId") { type = NavType.IntType },
+                navArgument("inGameNickname") { type = NavType.StringType },
                 navArgument("itemId") { type = NavType.IntType },
                 navArgument("paymentId") { type = NavType.IntType }
             )) {
-            val accountId = it.arguments?.getInt("accountId")
+            val accountId = it.arguments?.getString("inGameNickname")
             val itemId = it.arguments?.getInt("itemId")
             val paymentId = it.arguments?.getInt("paymentId")
             PaymentScreen(
-                accountId = accountId ?: 0,
+                accountId = accountId ?: "",
                 itemId = itemId ?: 0,
                 paymentId = paymentId ?: 0
             ) {

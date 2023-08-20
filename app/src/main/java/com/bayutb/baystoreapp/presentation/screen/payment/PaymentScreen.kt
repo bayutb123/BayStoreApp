@@ -67,7 +67,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun PaymentScreen(
     modifier: Modifier = Modifier,
-    accountId: Int,
+    accountId: String,
     itemId: Int,
     paymentId: Int,
     onBackPressed: () -> Unit
@@ -203,7 +203,7 @@ fun PaymentScreen(
                                         fontSize = MaterialTheme.typography.titleMedium.fontSize,
                                     )
                                     Text(
-                                        text = orderData.account.name,
+                                        text = orderData.account.inGameNickName,
                                         textAlign = TextAlign.End,
                                         fontWeight = FontWeight.Bold,
                                         fontSize = MaterialTheme.typography.titleLarge.fontSize,

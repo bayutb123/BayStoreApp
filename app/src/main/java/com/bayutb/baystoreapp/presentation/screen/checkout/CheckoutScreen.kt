@@ -45,6 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.bayutb.baystoreapp.domain.model.GameAccount
 import com.bayutb.baystoreapp.domain.model.OrderDetail
+import com.bayutb.baystoreapp.domain.model.UserIGN
 import com.bayutb.baystoreapp.presentation.screen.TitleText
 import com.bayutb.baystoreapp.presentation.screen.convertToRupiah
 import com.bayutb.baystoreapp.ui.theme.BayStoreAppTheme
@@ -60,7 +61,7 @@ fun CheckOutScreen(
 ) {
     val context = LocalContext.current
     // STATE
-    val defaultUser = GameAccount(0, "User not found~~", 0, 0)
+    val defaultUser = UserIGN("")
     var user by remember { mutableStateOf(defaultUser) }
     var userId by remember { mutableStateOf("") }
     var userServer by remember { mutableStateOf("") }
@@ -175,9 +176,10 @@ fun CheckOutScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
                         onClick = {
-                            user = checkOutViewModel.getAccountById(
-                                id = userId, server = userServer
-                            ) ?: defaultUser
+                            checkOutViewModel.getUserIgn(
+                                userId, userServer, "mobile-legend"
+                            )
+                            user = checkOutViewModel.userData.value
                             isAccountChecked = true
                         }, modifier = modifier.fillMaxWidth()
                     ) {
@@ -185,7 +187,7 @@ fun CheckOutScreen(
                     }
                 }
             }
-            AnimatedVisibility(visible = user.id == 0) {
+            AnimatedVisibility(visible = user.inGameNickName == "") {
                 Column(
                     modifier
                         .fillMaxWidth()
@@ -210,7 +212,7 @@ fun CheckOutScreen(
                     }
                 }
             }
-            AnimatedVisibility(visible = user.id != 0) {
+            AnimatedVisibility(visible = user.inGameNickName != "") {
                 Column(
                     modifier
                         .fillMaxWidth()
@@ -228,21 +230,18 @@ fun CheckOutScreen(
                     ) {
                         Column {
                             Text(text = "Account name")
-                            Text(text = "Level")
                         }
                         Spacer(modifier = modifier.width(8.dp))
                         Column {
                             Text(text = ":")
-                            Text(text = ":")
                         }
                         Column(Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-                            Text(text = user.name)
-                            Text(text = "${user.level}")
+                            Text(text = user.inGameNickName)
                         }
                     }
                 }
             }
-            AnimatedVisibility(visible = user.id != 0, modifier.padding(horizontal = 16.dp)) {
+            AnimatedVisibility(visible = user.inGameNickName != "", modifier.padding(horizontal = 16.dp)) {
                 ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = {
                     expanded = !expanded
                 }) {
