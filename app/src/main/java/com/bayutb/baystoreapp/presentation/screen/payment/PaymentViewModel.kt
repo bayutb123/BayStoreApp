@@ -32,7 +32,7 @@ class PaymentViewModel @Inject constructor(
 
     fun insertOrder(orderDetail: OrderDetail) {
         viewModelScope.launch {
-            val date = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+            val date = SimpleDateFormat("dd/M/yyyy HH:mm:ss")
             val currentDate = date.format(Date())
             databaseUseCase.insertOrder(
                 Orders(

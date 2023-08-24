@@ -24,6 +24,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,8 +41,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.bayutb.baystoreapp.domain.model.Orders
 import com.bayutb.baystoreapp.presentation.screen.convertToRupiah
 import com.bayutb.baystoreapp.ui.theme.BayStoreAppTheme
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +53,8 @@ fun TransactionPage(
     modifier: Modifier = Modifier
 ) {
     val transactionViewModel :TransactionViewModel = hiltViewModel()
-    val transactions = transactionViewModel.transactions
+    var transactions : State<List<Orders>> = transactionViewModel.transactions.collectAsState(initial = listOf())
+
     var isSortVisible by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
@@ -87,8 +94,7 @@ fun TransactionPage(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 content = {
-
-                    items(transactions) {order ->
+                    items(transactions.value) {order ->
                         Card(shape = MaterialTheme.shapes.medium) {
                             Column(
                                 modifier = modifier
